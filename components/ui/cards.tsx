@@ -3,7 +3,6 @@ import { Badge } from "./badge";
 import {
   ChartIcon,
   ClockIcon,
-  LayersIcon,
   DocumentIcon,
   ExternalLinkIcon,
 } from "./icons";
@@ -21,7 +20,7 @@ export interface CourseCardProps {
 
 export function CourseCard({
   icon = (
-    <div className="w-10 h-10 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-lg shrink-0">
+    <div className="w-12 h-12 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-xl shrink-0">
       N
     </div>
   ),
@@ -34,29 +33,29 @@ export function CourseCard({
 }: CourseCardProps) {
   return (
     <div
-      className={`group relative flex flex-col justify-between p-6 bg-white border border-neutral-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 ${className}`}
+      className={`group relative flex flex-col justify-between p-7 bg-white border border-neutral-200/90 rounded-2xl shadow-xs hover:shadow-md hover:border-neutral-300 transition-all duration-200 ${className}`}
     >
       <div>
-        <div className="mb-4">{icon}</div>
-        <h3 className="font-sans font-semibold text-lg text-neutral-900 leading-snug group-hover:text-[#F97316] transition-colors">
+        <div className="mb-5">{icon}</div>
+        <h3 className="font-serif font-bold text-xl text-neutral-900 leading-snug group-hover:text-[#F97316] transition-colors">
           {title}
         </h3>
-        <p className="mt-2 text-sm text-neutral-500 leading-relaxed">
+        <p className="mt-2.5 text-sm text-neutral-600 leading-relaxed">
           {description}
         </p>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-neutral-100 flex items-center flex-wrap gap-y-2 gap-x-4 text-xs text-neutral-500">
+      <div className="mt-8 pt-5 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
         <div className="flex items-center gap-1.5">
-          <ChartIcon size={15} className="text-neutral-500" />
+          <ChartIcon size={14} className="text-neutral-400" />
           <span>{level}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <ClockIcon size={15} className="text-neutral-500" />
+          <ClockIcon size={14} className="text-neutral-400" />
           <span>{duration}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <LayersIcon size={15} className="text-neutral-500" />
+          <DocumentIcon size={14} className="text-neutral-400" />
           <span>{typeof modulesCount === "number" ? `${modulesCount} modules` : modulesCount}</span>
         </div>
       </div>
