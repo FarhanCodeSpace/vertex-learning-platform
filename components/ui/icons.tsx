@@ -500,3 +500,120 @@ export function AccessibilityIcon({ size = 24, className = "", ...props }: IconP
     </svg>
   );
 }
+
+export function StarIcon({ size = 20, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+export function NextJsLogo({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div
+      className={`rounded-2xl bg-neutral-900 flex items-center justify-center text-white shadow-sm overflow-hidden p-2.5 ${className}`}
+    >
+      <svg viewBox="0 0 180 180" fill="none" className="w-full h-full">
+        <mask
+          height="180"
+          id="next-mask"
+          maskUnits="userSpaceOnUse"
+          style={{ maskType: "alpha" }}
+          width="180"
+          x="0"
+          y="0"
+        >
+          <circle cx="90" cy="90" fill="black" r="90" />
+        </mask>
+        <g mask="url(#next-mask)">
+          <path
+            d="M149.508 157.52L69.142 54H54V125.97H66.1136V69.3836L139.999 164.845C143.333 162.614 146.509 160.165 149.508 157.52Z"
+            fill="url(#paint0_linear)"
+          />
+          <rect fill="url(#paint1_linear)" height="72" width="12" x="115" y="54" />
+        </g>
+        <defs>
+          <linearGradient
+            gradientUnits="userSpaceOnUse"
+            id="paint0_linear"
+            x1="109"
+            x2="144.5"
+            y1="116.5"
+            y2="160.5"
+          >
+            <stop stopColor="white" />
+            <stop offset="1" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient
+            gradientUnits="userSpaceOnUse"
+            id="paint1_linear"
+            x1="121"
+            x2="120.799"
+            y1="54"
+            y2="106.875"
+          >
+            <stop stopColor="white" />
+            <stop offset="1" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+}
+
+export function DockerLogo({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center ${className}`}>
+      <svg
+        viewBox="0 0 48 48"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full drop-shadow-xs"
+      >
+        {/* Whale Body */}
+        <path
+          d="M44.5 24.5C43 23 40.5 23 38.5 24.2C36.8 21.5 33.5 20.2 29.5 20.2C28.2 20.2 27 20.4 25.8 20.8V17H21.5V22.2C20.8 22.5 20.2 23 19.5 23.5H7.5C5.8 23.5 4.5 24.8 4.5 26.5C4.5 32.5 9 37.5 17.5 37.5C27 37.5 35 34.5 39.5 28C41.8 28.5 44.5 27.5 45.5 25.5C45.8 25 45.2 24.2 44.5 24.5Z"
+          fill="#2496ED"
+        />
+        {/* Eye */}
+        <circle cx="10" cy="27.5" r="1" fill="#0A3C6B" />
+        {/* Containers on back */}
+        {/* Row 1 */}
+        <rect x="19" y="16.5" width="4.5" height="4" rx="0.5" fill="#007ACC" stroke="#FFFFFF" strokeWidth="0.75" />
+        <rect x="24.5" y="16.5" width="4.5" height="4" rx="0.5" fill="#0088CC" stroke="#FFFFFF" strokeWidth="0.75" />
+        <rect x="30" y="16.5" width="4.5" height="4" rx="0.5" fill="#0099DD" stroke="#FFFFFF" strokeWidth="0.75" />
+        {/* Row 2 */}
+        <rect x="13.5" y="11.5" width="4.5" height="4" rx="0.5" fill="#007ACC" stroke="#FFFFFF" strokeWidth="0.75" />
+        <rect x="19" y="11.5" width="4.5" height="4" rx="0.5" fill="#0088CC" stroke="#FFFFFF" strokeWidth="0.75" />
+        <rect x="24.5" y="11.5" width="4.5" height="4" rx="0.5" fill="#0099DD" stroke="#FFFFFF" strokeWidth="0.75" />
+        <rect x="30" y="11.5" width="4.5" height="4" rx="0.5" fill="#00A8EE" stroke="#FFFFFF" strokeWidth="0.75" />
+        {/* Row 3 */}
+        <rect x="19" y="6.5" width="4.5" height="4" rx="0.5" fill="#0099DD" stroke="#FFFFFF" strokeWidth="0.75" />
+        <rect x="24.5" y="6.5" width="4.5" height="4" rx="0.5" fill="#00A8EE" stroke="#FFFFFF" strokeWidth="0.75" />
+      </svg>
+    </div>
+  );
+}
+
+export function TypeScriptLogo({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div
+      className={`rounded-2xl bg-[#3178C6] flex items-center justify-center text-white shadow-sm font-sans font-bold text-2xl tracking-tight p-2 ${className}`}
+    >
+      TS
+    </div>
+  );
+}
+
