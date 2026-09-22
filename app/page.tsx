@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import {
   VertexLogo,
   BellIcon,
@@ -111,8 +111,8 @@ export default function VertexHomePage() {
             </nav>
           </div>
 
-          {/* Right: Notifications & Profile Avatar */}
-          <div className="flex items-center gap-5 sm:gap-6">
+          {/* Right: Notifications & Auth Controls */}
+          <div className="flex items-center gap-4 sm:gap-5">
             <button
               aria-label="Notifications"
               className="text-neutral-700 hover:text-neutral-900 hover:scale-110 active:scale-95 transition-all cursor-pointer p-1"
@@ -120,16 +120,29 @@ export default function VertexHomePage() {
               <BellIcon size={20} />
             </button>
 
-            <div className="relative w-9 h-9 rounded-full overflow-hidden ring-1 ring-neutral-200/80 shadow-xs cursor-pointer hover:ring-[#F97316]/50 transition-all">
-              <Image
-                src="/avatar.jpg"
-                alt="User Profile"
-                fill
-                sizes="36px"
-                className="object-cover"
-                priority
+            <Show when="signed-out">
+              <div className="flex items-center gap-2">
+                <SignInButton mode="modal">
+                  <button className="text-sm font-medium text-neutral-700 hover:text-neutral-900 px-3.5 py-1.5 rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer">
+                    Sign in
+                  </button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <button className="text-sm font-medium text-white bg-[#F97316] hover:bg-[#EA580C] px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer shadow-xs">
+                    Sign up
+                  </button>
+                </SignUpButton>
+              </div>
+            </Show>
+            <Show when="signed-in">
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-9 h-9 ring-1 ring-neutral-200/80 hover:ring-[#F97316]/50 transition-all",
+                  },
+                }}
               />
-            </div>
+            </Show>
           </div>
         </div>
       </header>
