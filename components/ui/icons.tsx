@@ -617,3 +617,213 @@ export function TypeScriptLogo({ className = "w-14 h-14" }: { className?: string
   );
 }
 
+// Learning Outcome Outline Icons
+export function OutcomeLayersIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M16 4L4 10L16 16L28 10L16 4Z" />
+      <path d="M4 16L16 22L28 16" />
+      <path d="M4 22L16 28L28 22" />
+    </svg>
+  );
+}
+
+export function OutcomeDatabaseIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <ellipse cx="16" cy="8" rx="10" ry="4" />
+      <path d="M6 8V16C6 18.2 10.5 20 16 20C21.5 20 26 18.2 26 16V8" />
+      <path d="M6 16V24C6 26.2 10.5 28 16 28C21.5 28 26 26.2 26 24V16" />
+    </svg>
+  );
+}
+
+export function OutcomeGaugeIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M16 6C9.37 6 4 11.37 4 18C4 21.6 5.6 24.8 8.1 27" />
+      <path d="M23.9 27C26.4 24.8 28 21.6 28 18C28 11.37 22.63 6 16 6Z" />
+      <path d="M16 18L21 13" />
+      <circle cx="16" cy="18" r="2" />
+      <path d="M7.5 12.5L9 14" />
+      <path d="M16 6V8" />
+      <path d="M24.5 12.5L23 14" />
+    </svg>
+  );
+}
+
+export function OutcomeCloudIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M24 24H9C6.24 24 4 21.76 4 19C4 16.42 5.95 14.3 8.48 14.04C9.25 9.48 13.22 6 18 6C22.42 6 26.15 9.17 26.88 13.43C28.66 14.31 29.9 16.14 29.9 18.25C29.9 21.43 27.28 24 24 24Z" />
+    </svg>
+  );
+}
+
+export function OutcomeShieldIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M16 4L6 8V16C6 22.5 10.3 28.5 16 30C21.7 28.5 26 22.5 26 16V8L16 4Z" />
+    </svg>
+  );
+}
+
+export function OutcomeWorkflowIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <rect x="4" y="6" width="7" height="7" rx="1.5" />
+      <rect x="21" y="6" width="7" height="7" rx="1.5" />
+      <rect x="12.5" y="19" width="7" height="7" rx="1.5" />
+      <path d="M11 9.5H21" />
+      <path d="M16 9.5V19" />
+    </svg>
+  );
+}
+
+export function OutcomeRocketIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M6 26L11 21M9 23L5 27L4 28L5 27L9 23ZM24 4C24 4 19 5 14 10C9.6 14.4 9 19 9 19L13 23C13 23 17.6 22.4 22 18C27 13 28 8 28 8L24 4Z" />
+      <circle cx="19" cy="13" r="2" />
+    </svg>
+  );
+}
+
+export function OutcomeCodeIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <polyline points="10 10 4 16 10 22" />
+      <polyline points="22 10 28 16 22 22" />
+      <line x1="18" y1="8" x2="14" y2="24" />
+    </svg>
+  );
+}
+
+export function OutcomeSparklesIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M16 4L18.5 11.5L26 14L18.5 16.5L16 24L13.5 16.5L6 14L13.5 11.5L16 4Z" />
+      <path d="M25 21L26.2 24.8L30 26L26.2 27.2L25 31L23.8 27.2L20 26L23.8 24.8L25 21Z" />
+    </svg>
+  );
+}
+
+export function OutcomePuzzleIcon({ size = 32, className = "", ...props }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M6 14V8C6 6.9 6.9 6 8 6H14C14 7.7 15.3 9 17 9C18.7 9 20 7.7 20 6H26C27.1 6 28 6.9 28 8V14C26.3 14 25 15.3 25 17C25 18.7 26.3 20 28 20V26C28 27.1 27.1 28 26 28H20C20 26.3 18.7 25 17 25C15.3 25 14 26.3 14 28H8C6.9 28 6 27.1 6 26V20C7.7 20 9 18.7 9 17C9 15.3 7.7 14 6 14Z" />
+    </svg>
+  );
+}
+
+
