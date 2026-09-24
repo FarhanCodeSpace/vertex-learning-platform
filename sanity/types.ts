@@ -53,7 +53,7 @@ export interface LessonSummary {
   _type: 'lesson'
   title: string
   slug: { current: string }
-  duration?: string
+  duration?: string | number
   freePreview?: boolean
   studentCount?: number
   poster?: SanityImage
@@ -131,7 +131,7 @@ export interface LessonNavigationItem {
   _id: string
   title: string
   slug: { current: string }
-  duration?: string
+  duration?: string | number
   freePreview?: boolean
   moduleTitle: string
   moduleIndex: number

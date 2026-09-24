@@ -55,7 +55,7 @@ export interface BreadcrumbsProps {
 
 export function Breadcrumbs({
   items = [
-    { label: "All Courses" },
+    { label: "All Courses", href: "/" },
     { label: "Next.js for Production" },
     { label: "Data Fetching & Caching" },
   ],
@@ -73,15 +73,24 @@ export function Breadcrumbs({
             {index > 0 && (
               <ChevronRightIcon size={14} className="text-neutral-400 shrink-0" />
             )}
-            <span
-              className={`transition-colors ${
-                isLast
-                  ? "text-neutral-900 font-medium cursor-default"
-                  : "hover:text-neutral-800 cursor-pointer"
-              }`}
-            >
-              {item.label}
-            </span>
+            {item.href && !isLast ? (
+              <a
+                href={item.href}
+                className="hover:text-neutral-800 transition-colors cursor-pointer"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <span
+                className={`transition-colors ${
+                  isLast
+                    ? "text-neutral-900 font-medium cursor-default"
+                    : "hover:text-neutral-800 cursor-pointer"
+                }`}
+              >
+                {item.label}
+              </span>
+            )}
           </React.Fragment>
         );
       })}
