@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { SearchIcon } from "@/components/ui/icons";
 
 export function HeroSearch() {
@@ -23,8 +24,16 @@ export function HeroSearch() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/courses?q=${encodeURIComponent(searchQuery.trim())}`);
+    const normalizedQuery = searchQuery.trim();
+
+    posthog.capture("course_search_submitted", {
+      has_query: normalizedQuery.length > 0,
+      query_length: normalizedQuery.length,
+      source: "homepage_hero",
+    });
+
+    if (normalizedQuery) {
+      router.push(`/courses?q=${encodeURIComponent(normalizedQuery)}`);
     } else {
       router.push("/courses");
     }

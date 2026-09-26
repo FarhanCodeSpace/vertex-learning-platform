@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import posthog from "posthog-js";
 import { ChevronDownIcon, PlayIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { calculateModuleDuration, formatDuration } from "@/lib/format";
@@ -38,10 +39,16 @@ export function CourseContentAccordion({
     : modules.slice(0, initialVisibleCount);
 
   const toggleModule = (index: number) => {
+    const willExpand = !expandedModules[index];
     setExpandedModules((prev) => ({
       ...prev,
-      [index]: !prev[index],
+      [index]: willExpand,
     }));
+    posthog.capture("course_module_toggled", {
+      course_slug: courseSlug,
+      module_index: index,
+      is_expanded: willExpand,
+    });
   };
 
   return (
@@ -129,6 +136,15 @@ export function CourseContentAccordion({
                         <Link
                           key={lesson._id || lessonIdx}
                           href={lessonUrl}
+                          onClick={() =>
+                            posthog.capture("lesson_selected", {
+                              course_slug: courseSlug,
+                              lesson_slug: lesson.slug?.current,
+                              module_index: modIdx,
+                              lesson_index: lessonIdx,
+                              is_free_preview: Boolean(lesson.freePreview),
+                            })
+                          }
                           className="group/lesson flex items-center justify-between p-3 rounded-xl hover:bg-white hover:shadow-2xs border border-transparent hover:border-neutral-200/80 transition-all text-sm"
                         >
                           <div className="flex items-center gap-3 min-w-0">

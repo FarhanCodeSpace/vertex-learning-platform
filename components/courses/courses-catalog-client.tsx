@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import posthog from "posthog-js";
 import { SearchIcon, StarIcon } from "@/components/ui/icons";
 import { CourseCardItem } from "@/components/course/course-card-item";
 import type { CourseCardSummary, Category } from "@/sanity/types";
@@ -28,6 +29,14 @@ export function CoursesCatalogClient({
 }: CoursesCatalogClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const selectCategory = (categorySlug: string) => {
+    setSelectedCategory(categorySlug);
+    posthog.capture("course_category_selected", {
+      category_slug: categorySlug,
+      source: "course_catalog",
+    });
+  };
 
   const filteredCourses = useMemo(() => {
     return initialCourses.filter((course) => {
@@ -60,7 +69,7 @@ export function CoursesCatalogClient({
         {/* Category Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
           <button
-            onClick={() => setSelectedCategory("all")}
+            onClick={() => selectCategory("all")}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
               selectedCategory === "all"
                 ? "bg-[#0F172A] text-white shadow-xs"
@@ -77,7 +86,7 @@ export function CoursesCatalogClient({
             return (
               <button
                 key={cat._id}
-                onClick={() => setSelectedCategory(cat.slug?.current || cat.title)}
+                onClick={() => selectCategory(cat.slug?.current || cat.title)}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   isSelected
                     ? "bg-[#0F172A] text-white shadow-xs"

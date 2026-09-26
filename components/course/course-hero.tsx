@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import posthog from "posthog-js";
 import {
   ChartIcon,
   ClockIcon,
@@ -32,6 +33,15 @@ export function CourseHero({
   const firstLessonUrl = firstLessonSlug
     ? `/lesson/${firstLessonSlug}`
     : `/courses/${course.slug.current}`;
+
+  const toggleBookmark = () => {
+    const willBeBookmarked = !isBookmarked;
+    setIsBookmarked(willBeBookmarked);
+    posthog.capture("course_bookmark_toggled", {
+      course_slug: course.slug.current,
+      is_bookmarked: willBeBookmarked,
+    });
+  };
 
   return (
     <section className="w-full">
@@ -89,6 +99,13 @@ export function CourseHero({
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
               href={firstLessonUrl}
+              onClick={() =>
+                posthog.capture("learning_continued", {
+                  course_slug: course.slug.current,
+                  lesson_slug: firstLessonSlug,
+                  total_modules: totalModulesCount,
+                })
+              }
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-medium text-sm shadow-sm hover:shadow-md hover:brightness-105 active:scale-[0.98] transition-all cursor-pointer group"
             >
               <span>Continue Learning</span>
@@ -98,7 +115,7 @@ export function CourseHero({
             </Link>
 
             <button
-              onClick={() => setIsBookmarked((prev) => !prev)}
+              onClick={toggleBookmark}
               className={`inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border font-medium text-sm transition-all cursor-pointer shadow-2xs ${
                 isBookmarked
                   ? "border-[#F97316]/50 bg-[#FFF5F0] text-[#C2410C]"

@@ -1,5 +1,7 @@
+import { SeverityNumber } from '@opentelemetry/api-logs'
 import { type QueryParams } from 'next-sanity'
 
+import { emitPostHogLog } from '@/lib/posthog-logger'
 import { client } from './client'
 
 export interface FetchOptions {
@@ -20,12 +22,34 @@ export async function sanityFetch<T>({
   options?: FetchOptions
 }): Promise<T> {
   const { revalidate = 60, tags = [] } = options
+  const startedAt = Date.now()
 
-  return client.fetch<T>(query, params, {
-    next: {
-      revalidate: typeof revalidate === 'number' ? revalidate : undefined,
-      tags,
-    },
-    cache: revalidate === false ? 'no-store' : undefined,
-  })
+  try {
+    const result = await client.fetch<T>(query, params, {
+      next: {
+        revalidate: typeof revalidate === 'number' ? revalidate : undefined,
+        tags,
+      },
+      cache: revalidate === false ? 'no-store' : undefined,
+    })
+
+    await emitPostHogLog('Sanity request completed', SeverityNumber.INFO, {
+      event: 'sanity_request',
+      status: 'success',
+      duration_ms: Date.now() - startedAt,
+      tag_count: tags.length,
+      cache_mode: revalidate === false ? 'no_store' : 'revalidate',
+    })
+
+    return result
+  } catch (error) {
+    await emitPostHogLog('Sanity request completed', SeverityNumber.ERROR, {
+      event: 'sanity_request',
+      status: 'failed',
+      duration_ms: Date.now() - startedAt,
+      tag_count: tags.length,
+      error_type: error instanceof Error ? error.name : 'unknown',
+    })
+    throw error
+  }
 }
