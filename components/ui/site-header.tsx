@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
+import posthog from "posthog-js";
 import { VertexLogo, BellIcon } from "@/components/ui/icons";
 
 interface SiteHeaderProps {
@@ -66,12 +67,22 @@ export function SiteHeader({
           <Show when="signed-out">
             <div className="flex items-center gap-2">
               <SignInButton mode="modal">
-                <button className="text-sm font-medium text-neutral-700 hover:text-neutral-900 px-3.5 py-1.5 rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer">
+                <button
+                  onClick={() =>
+                    posthog.capture("authentication_started", { method: "sign_in" })
+                  }
+                  className="text-sm font-medium text-neutral-700 hover:text-neutral-900 px-3.5 py-1.5 rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer"
+                >
                   Sign in
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="text-sm font-medium text-white bg-[#F97316] hover:bg-[#EA580C] px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer shadow-xs">
+                <button
+                  onClick={() =>
+                    posthog.capture("authentication_started", { method: "sign_up" })
+                  }
+                  className="text-sm font-medium text-white bg-[#F97316] hover:bg-[#EA580C] px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer shadow-xs"
+                >
                   Sign up
                 </button>
               </SignUpButton>

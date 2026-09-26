@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import posthog from "posthog-js";
 import {
   ChartIcon,
   ClockIcon,
@@ -129,6 +132,14 @@ export function CourseCardItem({ course, className = "" }: CourseCardItemProps) 
   return (
     <Link
       href={`/courses/${course.slug.current}`}
+      onClick={() =>
+        posthog.capture("course_selected", {
+          course_slug: course.slug.current,
+          course_level: course.level,
+          is_popular: Boolean(course.popular),
+          module_count: modulesCount,
+        })
+      }
       className={`group relative flex flex-col justify-between p-8 bg-white border border-neutral-200/90 rounded-2xl shadow-xs hover:shadow-md hover:border-neutral-300 transition-all duration-200 cursor-pointer ${className}`}
     >
       <div>
