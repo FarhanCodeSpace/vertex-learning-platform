@@ -33,7 +33,7 @@ export function HeroSearch() {
     });
 
     if (normalizedQuery) {
-      router.push(`/courses?q=${encodeURIComponent(normalizedQuery)}`);
+      router.push(`/search?q=${encodeURIComponent(normalizedQuery)}`);
     } else {
       router.push("/courses");
     }

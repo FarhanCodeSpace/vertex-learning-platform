@@ -11,6 +11,8 @@
     "studio:build": "npm --prefix studio run build"
   },
   "dependencies": {
+    "@ai-sdk/mcp": "^2.0.69",
+    "@ai-sdk/openai": "^4.0.86",
     "@clerk/nextjs": "^7.9.4",
     "@opentelemetry/api-logs": "^0.222.0",
     "@opentelemetry/exporter-logs-otlp-http": "^0.222.0",
@@ -18,6 +20,7 @@
     "@opentelemetry/sdk-logs": "^0.222.0",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^5.31.2",
+    "ai": "^7.0.130",
     "lucide-react": "^1.43.0",
     "next": "16.3.4",
     "next-sanity": "^13.3.4",
@@ -25,7 +28,8 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sanity": "^5.31.2",
-    "styled-components": "^6.5.3"
+    "styled-components": "^6.5.3",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

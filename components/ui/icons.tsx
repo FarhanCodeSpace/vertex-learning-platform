@@ -617,6 +617,119 @@ export function TypeScriptLogo({ className = "w-14 h-14" }: { className?: string
   );
 }
 
+export function ReactLogo({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center text-[#00D8FF] ${className}`}>
+      <svg viewBox="-11.5 -10.23174 23 20.46348" fill="none" className="w-full h-full">
+        <circle cx="0" cy="0" r="2.05" fill="currentColor" />
+        <g stroke="currentColor" strokeWidth="1" fill="none">
+          <ellipse rx="11" ry="4.2" />
+          <ellipse rx="11" ry="4.2" transform="rotate(60)" />
+          <ellipse rx="11" ry="4.2" transform="rotate(120)" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+export function NodeJsLogo({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center text-[#539E43] font-bold ${className}`}>
+      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+        <path
+          d="M12 2L21.5 7.5V18.5L12 24L2.5 18.5V7.5L12 2Z"
+          fill="#539E43"
+          fillOpacity="0.15"
+          stroke="#539E43"
+          strokeWidth="1.5"
+        />
+        <text
+          x="12"
+          y="15.5"
+          textAnchor="middle"
+          fill="#539E43"
+          fontSize="9"
+          fontWeight="bold"
+          fontFamily="system-ui, sans-serif"
+        >
+          JS
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+export function JavaScriptLogo({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div
+      className={`rounded-lg bg-[#F7DF1E] flex items-center justify-center text-black font-sans font-bold text-xs tracking-tight shadow-2xs ${className}`}
+    >
+      JS
+    </div>
+  );
+}
+
+export function PythonLogo({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+        <path
+          d="M11.9 2C6.9 2 7.2 4.1 7.2 4.1L7.2 6.3H12V7H5.1C2.3 7 2.3 10.3 2.3 10.3L2.3 12.8C2.3 15.3 4.1 15.1 4.1 15.1H5.8V13.3C5.8 11.2 7.6 11.2 7.6 11.2H12.4C14.3 11.2 14.3 9.4 14.3 9.4V4.6C14.3 2.3 11.9 2 11.9 2ZM9.5 3.3C10 3.3 10.4 3.7 10.4 4.2C10.4 4.7 10 5.1 9.5 5.1C9 5.1 8.6 4.7 8.6 4.2C8.6 3.7 9 3.3 9.5 3.3Z"
+          fill="#3776AB"
+        />
+        <path
+          d="M12.1 22C17.1 22 16.8 19.9 16.8 19.9L16.8 17.7H12V17H18.9C21.7 17 21.7 13.7 21.7 13.7L21.7 11.2C21.7 8.7 19.9 8.9 19.9 8.9H18.2V10.7C18.2 12.8 16.4 12.8 16.4 12.8H11.6C9.7 12.8 9.7 14.6 9.7 14.6V19.4C9.7 21.7 12.1 22 12.1 22ZM14.5 20.7C14 20.7 13.6 20.3 13.6 19.8C13.6 19.3 14 18.9 14.5 18.9C15 18.9 15.4 19.3 15.4 19.8C15.4 20.3 15 20.7 14.5 20.7Z"
+          fill="#FFD438"
+        />
+      </svg>
+    </div>
+  );
+}
+
+export function CourseBrandIcon({
+  title = "",
+  className = "w-5 h-5",
+}: {
+  title?: string;
+  className?: string;
+}) {
+  const lower = title.toLowerCase();
+  if (lower.includes("next.js") || lower.includes("nextjs")) {
+    return (
+      <div className={`rounded-sm bg-neutral-900 flex items-center justify-center text-white font-bold text-[10px] select-none ${className}`}>
+        N
+      </div>
+    );
+  }
+  if (lower.includes("react")) {
+    return <ReactLogo className={className} />;
+  }
+  if (lower.includes("node") || lower.includes("backend")) {
+    return <NodeJsLogo className={className} />;
+  }
+  if (lower.includes("javascript") || lower.includes("js")) {
+    return <JavaScriptLogo className={className} />;
+  }
+  if (lower.includes("typescript") || lower.includes("ts")) {
+    return (
+      <div className={`rounded-sm bg-[#3178C6] flex items-center justify-center text-white font-bold text-[10px] select-none ${className}`}>
+        TS
+      </div>
+    );
+  }
+  if (lower.includes("docker") || lower.includes("kubernetes") || lower.includes("devops")) {
+    return <DockerLogo className={className} />;
+  }
+  if (lower.includes("python") || lower.includes("data")) {
+    return <PythonLogo className={className} />;
+  }
+  return (
+    <div className={`rounded-sm bg-orange-500 flex items-center justify-center text-white font-bold text-[10px] select-none ${className}`}>
+      {title.charAt(0) || "V"}
+    </div>
+  );
+}
+
 // Learning Outcome Outline Icons
 export function OutcomeLayersIcon({ size = 32, className = "", ...props }: IconProps) {
   return (

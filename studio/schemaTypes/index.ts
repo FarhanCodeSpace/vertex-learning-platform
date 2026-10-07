@@ -8,6 +8,7 @@ import { moduleType } from './module'
 import { blockContent } from './objects/blockContent'
 import { learningOutcome } from './objects/learningOutcome'
 import { resource } from './objects/resource'
+import { video } from './video'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -16,6 +17,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     lesson,
     instructor,
     category,
+    video,
 
     // Embedded Objects
     moduleType,
