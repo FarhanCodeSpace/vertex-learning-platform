@@ -147,3 +147,34 @@ export function CourseVisual({
     </div>
   );
 }
+
+export function CourseIcon({
+  icon,
+  className = "w-6 h-6",
+}: {
+  icon?: string | null;
+  className?: string;
+}) {
+  const iconStr = (icon || "").toLowerCase();
+
+  if (iconStr.includes("next") || iconStr === "n") {
+    return (
+      <span className="font-serif font-black text-lg text-white">N</span>
+    );
+  }
+
+  if (iconStr.includes("docker")) {
+    return <DockerLogo className={className} />;
+  }
+
+  if (iconStr.includes("ts") || iconStr.includes("typescript")) {
+    return <span className="font-sans font-bold text-xs text-white">TS</span>;
+  }
+
+  return (
+    <span className="font-serif font-bold text-base text-white">
+      {icon ? icon.charAt(0).toUpperCase() : "V"}
+    </span>
+  );
+}
+
