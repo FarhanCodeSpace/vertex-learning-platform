@@ -99,13 +99,18 @@ export function CourseHero({
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
               href={firstLessonUrl}
-              onClick={() =>
+              onClick={() => {
                 posthog.capture("learning_continued", {
                   course_slug: course.slug.current,
                   lesson_slug: firstLessonSlug,
                   total_modules: totalModulesCount,
-                })
-              }
+                });
+                posthog.capture("resume_used", {
+                  course_slug: course.slug.current,
+                  lesson_slug: firstLessonSlug ?? undefined,
+                  source: "course_hero",
+                });
+              }}
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-medium text-sm shadow-sm hover:shadow-md hover:brightness-105 active:scale-[0.98] transition-all cursor-pointer group"
             >
               <span>Continue Learning</span>

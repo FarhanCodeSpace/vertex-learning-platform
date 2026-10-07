@@ -142,6 +142,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
               lessonSlug={lesson.slug.current}
               courseSlug={courseSlug}
               startSeconds={startSeconds}
+              duration={lesson.duration}
             />
 
             {/* Content & Notes Tabs */}

@@ -3,6 +3,8 @@
 import React from "react";
 import Link from "next/link";
 
+import posthog from "posthog-js";
+
 interface CourseProgressBarProps {
   percentage?: number;
   firstLessonSlug?: string | null;
@@ -17,6 +19,19 @@ export function CourseProgressBar({
   const targetUrl = firstLessonSlug
     ? `/lesson/${firstLessonSlug}`
     : `/courses/${courseSlug}`;
+
+  const handleContinue = () => {
+    posthog.capture("learning_continued", {
+      course_slug: courseSlug,
+      lesson_slug: firstLessonSlug,
+      source: "course_progress_bar",
+    });
+    posthog.capture("resume_used", {
+      course_slug: courseSlug,
+      lesson_slug: firstLessonSlug ?? undefined,
+      source: "course_progress_bar",
+    });
+  };
 
   return (
     <div className="fixed bottom-6 inset-x-4 sm:inset-x-8 lg:inset-x-12 z-40 max-w-[1280px] mx-auto pointer-events-auto">
@@ -45,6 +60,7 @@ export function CourseProgressBar({
         <div className="w-full sm:w-auto shrink-0">
           <Link
             href={targetUrl}
+            onClick={handleContinue}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#EA580C] to-[#F97316] text-white font-medium text-sm shadow-sm hover:shadow-md hover:brightness-105 active:scale-[0.98] transition-all cursor-pointer group"
           >
             <span>Continue Learning</span>

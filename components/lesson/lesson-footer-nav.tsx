@@ -5,6 +5,7 @@ import Link from "next/link";
 import posthog from "posthog-js";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { formatDuration } from "@/lib/format";
+import { trackLessonCompleted } from "@/lib/analytics";
 import type { LessonNavigationItem } from "@/sanity/types";
 
 interface LessonFooterNavProps {
@@ -19,6 +20,16 @@ export function LessonFooterNav({
   courseSlug,
 }: LessonFooterNavProps) {
   const handleNavClick = (direction: "previous" | "next", item: LessonNavigationItem) => {
+    if (direction === "next" && previousLesson?.slug?.current) {
+      trackLessonCompleted({
+        lesson_slug: previousLesson.slug.current,
+        course_slug: courseSlug,
+        module_index: previousLesson.moduleIndex,
+        lesson_index: previousLesson.lessonIndex,
+        completion_trigger: "next_lesson_button",
+      });
+    }
+
     posthog.capture("lesson_navigation_clicked", {
       direction,
       course_slug: courseSlug,

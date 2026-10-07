@@ -2,24 +2,26 @@
 
 import React from "react";
 import Link from "next/link";
-import posthog from "posthog-js";
+import { trackSearchResultClicked } from "@/lib/analytics";
 import { CheckCircleIcon, CourseBrandIcon, DocumentIcon, ExternalLinkIcon } from "@/components/ui/icons";
 import type { LessonSearchResult } from "@/sanity/lib/search";
 
 interface LessonResultCardProps {
   result: LessonSearchResult;
   query: string;
+  positionIndex?: number;
 }
 
-export function LessonResultCard({ result, query }: LessonResultCardProps) {
+export function LessonResultCard({ result, query, positionIndex }: LessonResultCardProps) {
   const lessonUrl = `/lesson/${result.lessonSlug}`;
 
   const handleClick = () => {
-    posthog.capture("search_result_clicked", {
+    trackSearchResultClicked({
       query,
       result_type: "lesson",
       lesson_slug: result.lessonSlug,
       course_title: result.courseTitle,
+      position_index: positionIndex,
     });
   };
 

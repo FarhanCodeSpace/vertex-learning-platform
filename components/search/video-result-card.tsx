@@ -2,25 +2,27 @@
 
 import React from "react";
 import Link from "next/link";
-import posthog from "posthog-js";
+import { trackSearchResultClicked } from "@/lib/analytics";
 import { CourseBrandIcon, DocumentIcon, PlayIcon } from "@/components/ui/icons";
 import type { VideoSearchResult } from "@/sanity/lib/search";
 
 interface VideoResultCardProps {
   result: VideoSearchResult;
   query: string;
+  positionIndex?: number;
 }
 
-export function VideoResultCard({ result, query }: VideoResultCardProps) {
+export function VideoResultCard({ result, query, positionIndex }: VideoResultCardProps) {
   const lessonUrl = `/lesson/${result.lessonSlug}?start=${result.startSeconds}`;
 
   const handleClick = () => {
-    posthog.capture("search_result_clicked", {
+    trackSearchResultClicked({
       query,
       result_type: "video",
       lesson_slug: result.lessonSlug,
       start_seconds: result.startSeconds,
       course_title: result.courseTitle,
+      position_index: positionIndex,
     });
   };
 

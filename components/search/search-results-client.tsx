@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import posthog from "posthog-js";
+import { trackSearchPerformed } from "@/lib/analytics";
 import { ChevronDownIcon, SearchIcon } from "@/components/ui/icons";
 import { VideoResultCard } from "@/components/search/video-result-card";
 import { LessonResultCard } from "@/components/search/lesson-result-card";
@@ -43,13 +43,15 @@ export function SearchResultsClient({
   // Track search performance in PostHog
   useEffect(() => {
     if (initialQuery) {
-      posthog.capture("search_performed", {
+      trackSearchPerformed({
         query: initialQuery,
         total_results: data.totalResults,
         courses_count: data.coursesCount,
+        sort,
+        search_source: "search_page",
       });
     }
-  }, [initialQuery, data.totalResults, data.coursesCount]);
+  }, [initialQuery, data.totalResults, data.coursesCount, sort]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,13 +156,14 @@ export function SearchResultsClient({
       {/* Results List */}
       {data.totalResults > 0 ? (
         <div className="space-y-4 sm:space-y-5">
-          {data.results.map((result) => {
+          {data.results.map((result, idx) => {
             if (result.type === "video") {
               return (
                 <VideoResultCard
                   key={result.id}
                   result={result}
                   query={initialQuery}
+                  positionIndex={idx}
                 />
               );
             }
@@ -169,6 +172,7 @@ export function SearchResultsClient({
                 key={result.id}
                 result={result}
                 query={initialQuery}
+                positionIndex={idx}
               />
             );
           })}

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { searchContent } from '@/sanity/lib/search'
+import { emitPostHogLog } from '@/lib/posthog-logger'
+import { SeverityNumber } from '@opentelemetry/api-logs'
 import { z } from 'zod'
 
 const searchRequestSchema = z.object({
@@ -23,6 +25,15 @@ export async function GET(req: NextRequest) {
     }
 
     const searchResponse = await searchContent(parsed.data.query, parsed.data.sort)
+
+    await emitPostHogLog('Search API query executed', SeverityNumber.INFO, {
+      query: parsed.data.query,
+      query_length: parsed.data.query.length,
+      total_results: searchResponse.totalResults,
+      courses_count: searchResponse.coursesCount,
+      sort: parsed.data.sort,
+    })
+
     return NextResponse.json(searchResponse)
   } catch (error) {
     console.error('[Search API Error]:', error)
@@ -43,6 +54,15 @@ export async function POST(req: NextRequest) {
     }
 
     const searchResponse = await searchContent(parsed.data.query, parsed.data.sort)
+
+    await emitPostHogLog('Search API query executed', SeverityNumber.INFO, {
+      query: parsed.data.query,
+      query_length: parsed.data.query.length,
+      total_results: searchResponse.totalResults,
+      courses_count: searchResponse.coursesCount,
+      sort: parsed.data.sort,
+    })
+
     return NextResponse.json(searchResponse)
   } catch (error) {
     console.error('[Search API Error]:', error)
