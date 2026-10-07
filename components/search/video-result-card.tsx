@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { trackSearchResultClicked } from "@/lib/analytics";
 import { CourseBrandIcon, DocumentIcon, PlayIcon } from "@/components/ui/icons";
 import type { VideoSearchResult } from "@/sanity/lib/search";
@@ -34,10 +35,20 @@ export function VideoResultCard({ result, query, positionIndex }: VideoResultCar
         onClick={handleClick}
         className="relative shrink-0 w-full md:w-[260px] lg:w-[280px] aspect-video rounded-xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-950 overflow-hidden flex items-center justify-center group/thumb shadow-inner"
       >
-        {/* Visual Brand Background Accent */}
-        <div className="absolute inset-0 opacity-20 flex items-center justify-center scale-150 group-hover/thumb:scale-160 transition-transform duration-300">
-          <CourseBrandIcon title={result.courseTitle} className="w-24 h-24 opacity-60" />
-        </div>
+        {/* Visual Brand or Image Background */}
+        {result.thumbnail ? (
+          <Image
+            src={result.thumbnail}
+            alt={result.title}
+            fill
+            className="object-cover opacity-80 group-hover/thumb:opacity-90 group-hover/thumb:scale-105 transition-all duration-300"
+            sizes="(max-width: 768px) 100vw, 280px"
+          />
+        ) : (
+          <div className="absolute inset-0 opacity-20 flex items-center justify-center scale-150 group-hover/thumb:scale-160 transition-transform duration-300">
+            <CourseBrandIcon title={result.courseTitle} className="w-24 h-24 opacity-60" />
+          </div>
+        )}
 
         {/* Play Button Icon Overlay */}
         <div className="relative z-10 w-12 h-12 rounded-full bg-white/95 text-neutral-900 flex items-center justify-center shadow-md group-hover/thumb:scale-110 group-hover/thumb:bg-white transition-transform">

@@ -50,13 +50,21 @@ export interface SearchResponse {
 }
 
 function formatTimestamp(seconds: number): string {
-  const m = Math.floor(seconds / 60)
-  const s = Math.floor(seconds % 60)
+  const safeSec = Math.max(0, Math.floor(seconds))
+  const h = Math.floor(safeSec / 3600)
+  const m = Math.floor((safeSec % 3600) / 60)
+  const s = safeSec % 60
+  if (h > 0) {
+    return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+  }
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
 
 /**
  * Searches lessons, courses, and video transcripts/chapters in Sanity.
+ * Adheres to 2-stage timestamp resolution:
+ * 1. Match authored chapters (Table of Contents) first (clean labels).
+ * 2. Fall back to transcript chunks only if no chapters match.
  */
 export async function searchContent(
   query: string,
@@ -72,7 +80,7 @@ export async function searchContent(
     }
   }
 
-  // Tokenize keywords for wildcard and regex matching
+  // Tokenize keywords for wildcard and token matching
   const tokens = normalizedQuery
     .toLowerCase()
     .split(/\s+/)
@@ -101,7 +109,7 @@ export async function searchContent(
       }[]
     }[]
   >({
-    query: `*[_type == "course"]{
+    query: `*[_type == "course" && !(_id in path("drafts.**"))]{
       _id,
       title,
       slug,
@@ -114,7 +122,7 @@ export async function searchContent(
           title,
           slug,
           videoUrl,
-          thumbnail,
+          "thumbnail": thumbnail.asset->url,
           duration,
           keyPoints,
           "notesText": pt::text(notes)
@@ -126,7 +134,7 @@ export async function searchContent(
     },
   })
 
-  // Fetch video intelligence documents
+  // Fetch video intelligence documents (internal lookup)
   const videosData = await sanityFetch<
     {
       _id: string
@@ -137,7 +145,7 @@ export async function searchContent(
       chunks?: { startSeconds: number; text: string }[]
     }[]
   >({
-    query: `*[_type == "video"]{
+    query: `*[_type == "video" && !(_id in path("drafts.**"))]{
       _id,
       url,
       title,
@@ -164,19 +172,31 @@ export async function searchContent(
 
   // Helper score calculator
   const calculateScore = (target: string, queryStr: string, wordTokens: string[]): number => {
-    const text = (target || '').toLowerCase()
-    const q = queryStr.toLowerCase()
-    if (!text) return 0
+    const text = (target || '').toLowerCase().trim()
+    const q = queryStr.toLowerCase().trim()
+    if (!text || !q) return 0
     if (text === q) return 100
+    if (text.startsWith(q)) return 90
     if (text.includes(q)) return 80
 
-    let matches = 0
+    let matchedTokensCount = 0
+    let boundaryMatches = 0
     for (const token of wordTokens) {
+      if (!token) continue
       if (text.includes(token)) {
-        matches += 1
+        matchedTokensCount += 1
+        const boundaryRegex = new RegExp(`\\b${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i')
+        if (boundaryRegex.test(text)) {
+          boundaryMatches += 1
+        }
       }
     }
-    return (matches / wordTokens.length) * 50
+
+    if (matchedTokensCount === 0) return 0
+
+    const matchRatio = matchedTokensCount / wordTokens.length
+    const bonus = (boundaryMatches / wordTokens.length) * 15
+    return Math.min(75, Math.round(matchRatio * 55 + bonus))
   }
 
   // Iterate courses, modules, and lessons
@@ -220,77 +240,92 @@ export async function searchContent(
           courseScore * 0.5
         )
 
-        // Find video intelligence matches
-        let matchedChapter: { startSeconds: number; label: string; score: number } | null = null
-        let matchedChunk: { startSeconds: number; text: string; score: number } | null = null
+        // TWO-STAGE TIMESTAMP RESOLUTION:
+        // Stage 1: Chapters (Table of contents) - Clean authored topics
+        // Stage 2: Transcript Chunks (Fallback) - Only if no chapter matches
+        let videoScore = 0
+        let startSec = 0
+        let videoDesc = ''
+        let matchedStage: 'chapter' | 'transcript' | 'topic' | null = null
 
         const videoDoc = videoUrl ? videoMap.get(videoUrl) : null
         if (videoDoc) {
-          // 1. Chapter matching (Table of contents)
-          if (videoDoc.chapters) {
+          // --- STAGE 1: CHAPTER RESOLUTION ---
+          let bestChapter: { startSeconds: number; label: string; score: number } | null = null
+          if (videoDoc.chapters && videoDoc.chapters.length > 0) {
             for (const ch of videoDoc.chapters) {
               const chScore = calculateScore(ch.label, normalizedQuery, tokens)
-              if (chScore > 0 && (!matchedChapter || chScore > matchedChapter.score)) {
-                matchedChapter = { startSeconds: ch.startSeconds, label: ch.label, score: chScore }
+              if (chScore > 0 && (!bestChapter || chScore > bestChapter.score)) {
+                bestChapter = { startSeconds: ch.startSeconds, label: ch.label, score: chScore }
               }
             }
           }
 
-          // 2. Transcript chunk matching (Fallback)
-          if (videoDoc.chunks) {
+          if (bestChapter && bestChapter.score >= 20) {
+            // Found matching chapter: prioritize clean chapter timestamp
+            videoScore = bestChapter.score * 1.35
+            startSec = bestChapter.startSeconds
+            videoDesc = bestChapter.label
+            matchedStage = 'chapter'
+          }
+
+          // --- STAGE 2: TRANSCRIPT CHUNKS FALLBACK ---
+          if (!matchedStage && videoDoc.chunks && videoDoc.chunks.length > 0) {
+            let bestChunk: { startSeconds: number; text: string; score: number } | null = null
             for (const chunk of videoDoc.chunks) {
               const chunkScore = calculateScore(chunk.text, normalizedQuery, tokens)
-              if (chunkScore > 0 && (!matchedChunk || chunkScore > matchedChunk.score)) {
-                matchedChunk = { startSeconds: chunk.startSeconds, text: chunk.text, score: chunkScore }
+              if (chunkScore > 0 && (!bestChunk || chunkScore > bestChunk.score)) {
+                bestChunk = { startSeconds: chunk.startSeconds, text: chunk.text, score: chunkScore }
               }
             }
+
+            if (bestChunk && bestChunk.score >= 20) {
+              videoScore = bestChunk.score
+              startSec = bestChunk.startSeconds
+              videoDesc = bestChunk.text
+              matchedStage = 'transcript'
+            }
           }
+
+          // --- STAGE 3: LESSON TOPIC MATCH WITH KNOWN VIDEO ---
+          if (!matchedStage && maxLessonScore >= 35) {
+            // Broad lesson topic match: ground to the first chapter or 0s
+            videoScore = maxLessonScore * 0.85
+            startSec = videoDoc.chapters && videoDoc.chapters.length > 0 ? videoDoc.chapters[0].startSeconds : 0
+            videoDesc = lessonKeyPoints[0] || notesText.slice(0, 140) || lessonTitle
+            matchedStage = 'topic'
+          }
+        } else if (videoUrl && maxLessonScore >= 35) {
+          videoScore = maxLessonScore * 0.85
+          startSec = 0
+          videoDesc = lessonKeyPoints[0] || notesText.slice(0, 140) || lessonTitle
+          matchedStage = 'topic'
         }
 
-        // Add Video Result if matched chapter, chunk, or strong lesson title match with video
-        if (videoUrl) {
-          let videoScore = 0
-          let startSec = 0
-          let videoDesc = ''
-
-          if (matchedChapter && matchedChapter.score >= 20) {
-            videoScore = matchedChapter.score * 1.3
-            startSec = matchedChapter.startSeconds
-            videoDesc = matchedChapter.label
-          } else if (matchedChunk && matchedChunk.score >= 20) {
-            videoScore = matchedChunk.score
-            startSec = matchedChunk.startSeconds
-            videoDesc = matchedChunk.text
-          } else if (maxLessonScore >= 30) {
-            videoScore = maxLessonScore * 0.9
-            startSec = Math.floor(lessonDuration * 0.15)
-            videoDesc = lessonKeyPoints[0] || notesText.slice(0, 140) || lessonTitle
-          }
-
-          if (videoScore >= 20) {
-            matchingCoursesSet.add(courseTitle)
-            videoResults.push({
-              id: `video-${lesson._id}-${startSec}`,
-              type: 'video',
-              title: lessonTitle,
-              courseTitle,
-              courseSlug,
-              courseIcon,
-              moduleLabel: `Lesson ${lessonNumber} · ${moduleTitle}`,
-              moduleTitle,
-              summary:
-                videoDesc ||
-                `Learn ${lessonTitle.toLowerCase()} in depth with step-by-step guidance and practical patterns.`,
-              duration: lessonDuration,
-              durationFormatted: formatDuration(lessonDuration),
-              startSeconds: startSec,
-              startFormatted: formatTimestamp(startSec),
-              thumbnail: undefined,
-              lessonSlug,
-              videoUrl,
-              score: videoScore,
-            })
-          }
+        // Add Video Result if valid grounded video moment was found
+        if (videoUrl && videoScore >= 20) {
+          matchingCoursesSet.add(courseTitle)
+          videoResults.push({
+            id: `video-${lesson._id}-${startSec}`,
+            type: 'video',
+            title: lessonTitle,
+            courseTitle,
+            courseSlug,
+            courseIcon,
+            moduleLabel: `Lesson ${lessonNumber} · ${moduleTitle}`,
+            moduleTitle,
+            summary:
+              videoDesc ||
+              `Learn ${lessonTitle.toLowerCase()} in depth with step-by-step guidance and practical patterns.`,
+            duration: lessonDuration,
+            durationFormatted: formatDuration(lessonDuration),
+            startSeconds: startSec,
+            startFormatted: formatTimestamp(startSec),
+            thumbnail: (typeof lesson.thumbnail === 'string' ? lesson.thumbnail : undefined),
+            lessonSlug,
+            videoUrl,
+            score: videoScore,
+          })
         }
 
         // Add Lesson Result if lesson score matches
